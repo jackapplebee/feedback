@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your feedback is valuable to us</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f7f7f7; margin: 0; }
+    .wrap { max-width: 700px; margin: 40px auto; background: #fff; padding: 24px; border: 1px solid #ddd; border-radius: 8px; }
+    .header { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+    .row { margin-bottom: 16px; }
+    .label { font-weight: 600; margin-bottom: 6px; }
+    .stars { display: flex; gap: 6px; }
+    .star { font-size: 26px; cursor: pointer; color: #ccc; }
+    .star.active { color: #f4b400; }
+    textarea { width: 100%; min-height: 100px; padding: 10px; }
+    .btn { margin-top: 20px; background: #0f4c5c; color: #fff; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    .btn:hover { filter: brightness(0.9); }
+    .success { text-align: center; padding: 40px; display: none; }
+    .error { color:#b91c1c; background:#fff3f3; border:1px solid #fecaca; padding:10px; display:none; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">Your feedback is valuable to us</div>
+    <form id="feedbackForm">
+      <div class="row">
+        <div class="label">Overall</div>
+        <div class="stars" data-name="overall"></div>
+      </div>
+      <div class="row">
+        <div class="label">Food</div>
+        <div class="stars" data-name="food"></div>
+      </div>
+      <div class="row">
+        <div class="label">Drinks</div>
+        <div class="stars" data-name="drinks"></div>
+      </div>
+      <div class="row">
+        <div class="label">Service</div>
+        <div class="stars" data-name="service"></div>
+      </div>
+      <div class="row">
+        <div class="label">Ambience</div>
+        <div class="stars" data-name="ambience"></div>
+      </div>
+      <div class="row">
+        <div class="label">Would you recommend us?</div>
+        <label><input type="radio" name="recommend" value="Yes" /> Yes</label>
+        <label><input type="radio" name="recommend" value="No" /> No</label>
+      </div>
+      <div class="row">
+        <div class="label">Comments</div>
+        <textarea name="comments" placeholder="Tell us more..."></textarea>
+      </div>
+      <button type="submit" class="btn">Submit Feedback</button>
+      <div id="err" class="error"></div>
+    </form>
+    <div class="success" id="successMsg">
+      <h2>✅ Thanks for your feedback!</h2>
+      <p>We really appreciate it and look forward to seeing you again soon.</p>
+    </div>
+  </div>
+
+  <script>
+    // 1) Paste your Apps Script Web App URL here (ends with /exec)
+    const GS_ENDPOINT = 'https://script.google.com/macros/s/PASTE_WEB_APP_ID/exec';
+
+    // Build star widgets
+    document.querySelectorAll(".stars").forEach(starWrap => {
+      for (let i = 1; i <= 5; i++) {
+        const span = document.createElement("span");
+        span.textContent = "★";
+        span.className = "star";
+        span.dataset.value = i;
+        span.addEventListener("click", () => {
+          starWrap.querySelectorAll(".star").forEach(s => s.classList.remove("active"));
+          for (let j = 1; j <= i; j++) {
+            starWrap.querySelector('.star[data-value="' + j + '"]').classList.add("active");
+          }
+          starWrap.dataset.selected = i;
+        });
+        starWrap.appendChild(span);
+      }
+    });
+
+    // Mailchimp params (optional, allowed to be missing)
+    const qp = new URLSearchParams(location.search);
+    const mcName = qp.get('name') || '';
+    const mcEmail = qp.get('email') || '';
+
+    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = e.target;
+
+      const payload = {
+        name: mcName,
+        email: mcEmail,
+        overall: f.querySelector('[data-name="overall"]').dataset.selected || '',
+        food:    f.querySelector('[data-name="food"]').dataset.selected || '',
+        drinks:  f.querySelector('[data-name="drinks"]').dataset.selected || '',
+        service: f.querySelector('[data-name="service"]').dataset.selected || '',
+        ambience:f.querySelector('[data-name="ambience"]').dataset.selected || '',
+        recommend: f.querySelector('input[name="recommend"]:checked')?.value || '',
+        comments: f.comments.value || '',
+        user_agent: navigator.userAgent
+      };
+
+      const body = new URLSearchParams(payload).toString();
+      try {
+        await fetch(GS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+        f.style.display = "none";
+        document.getElementById("successMsg").style.display = "block";
+      } catch (err) {
+        const box = document.getElementById("err");
+        box.textContent = 'Error: ' + err.message;
+        box.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
