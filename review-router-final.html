@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Review Router - Email Template Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+        
+        /* Generator Section */
+        .generator-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 40px;
+            background: #ffffff;
+            border: 2px solid #000000;
+        }
+        
+        .generator-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .generator-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .generator-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #000000;
+            background: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            background: #f8f8f8;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 12px;
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 14px;
+        }
+        
+        .file-upload-label:hover {
+            background: #333333;
+        }
+        
+        .logo-preview {
+            margin-top: 15px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #cccccc;
+            background: #fafafa;
+        }
+        
+        .logo-preview img {
+            max-height: 80px;
+            max-width: 200px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #f8f8f8;
+            border: 2px solid #000000;
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #cccccc;
+        }
+        
+        .preview-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .email-preview {
+            background: #ffffff;
+            border: 1px solid #dddddd;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .email-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .email-logo img {
+            max-height: 60px;
+            max-width: 180px;
+        }
+        
+        .email-content {
+            text-align: center;
+        }
+        
+        .email-content h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .rating-container {
+            margin: 30px 0;
+        }
+        
+        .star-wrapper {
+            display: inline-block;
+            margin: 0 8px;
+            text-align: center;
+        }
+        
+        .star {
+            display: block;
+            font-size: 36px;
+            cursor: pointer;
+            color: #cccccc;
+            transition: color 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .star:hover {
+            color: #000000;
+        }
+        
+        .star-number {
+            display: block;
+            font-size: 14px;
+            color: #666666;
+            margin-top: 5px;
+        }
+        
+        .code-section {
+            margin-top: 30px;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .code-header h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .copy-btn {
+            padding: 8px 16px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #333333;
+        }
+        
+        .copy-btn.copied {
+            background: #4CAF50;
+        }
+        
+        .code-container {
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #000000;
+        }
+        
+        .instructions h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .reset-btn {
+            width: 100%;
+            padding: 14px;
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .reset-btn:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Generator Form -->
+    <div class="generator-container" id="generatorSection">
+        <div class="generator-header">
+            <h1>Smart Review Router</h1>
+            <p>Create a professional email that routes happy customers to Google Reviews</p>
+        </div>
+        
+        <form id="generatorForm">
+            <div class="form-group">
+                <label for="restaurantName">Restaurant Name</label>
+                <input type="text" id="restaurantName" name="restaurantName" placeholder="e.g., Applebee's Fish" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="googleReviewUrl">Google Review URL</label>
+                <input type="url" id="googleReviewUrl" name="googleReviewUrl" placeholder="https://g.page/r/..." required>
+                <small style="color: #666; display: block; margin-top: 5px;">Find this in your Google Business Profile</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="internalFeedbackUrl">Internal Feedback Form URL</label>
+                <input type="url" id="internalFeedbackUrl" name="internalFeedbackUrl" placeholder="https://yoursite.com/feedback" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="logoUpload">Restaurant Logo (Optional)</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="logoUpload" name="logoUpload" accept="image/png,image/jpeg,image/jpg">
+                    <label for="logoUpload" class="file-upload-label">Choose Logo File</label>
+                </div>
+                <div class="logo-preview" id="logoPreview">
+                    <span style="color: #999;">No logo uploaded</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="generate-btn">Generate Email Template</button>
+        </form>
+    </div>
+    
+    <!-- Preview Section -->
+    <div class="preview-section" id="previewSection">
+        <div class="preview-header">
+            <h2>Your Email Template</h2>
+            <p>Preview and copy the HTML code below</p>
+        </div>
+        
+        <div class="email-preview" id="emailPreview">
+            <!-- Preview will be inserted here -->
+        </div>
+        
+        <div class="code-section">
+            <div class="code-header">
+                <h3>HTML Code</h3>
+                <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+            </div>
+            <div class="code-container" id="codeContainer">
+                <!-- Code will be inserted here -->
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>Implementation Instructions</h3>
+            <ol>
+                <li>Copy the HTML code above</li>
+                <li>Paste into your email service provider (Mailchimp, Squarespace Email, etc.)</li>
+                <li>Test all star ratings to ensure proper routing</li>
+                <li>4-5 stars → Google Reviews</li>
+                <li>1-3 stars → Internal feedback form</li>
+            </ol>
+        </div>
+        
+        <button class="reset-btn" onclick="resetForm()">Create Another Template</button>
+    </div>
+    
+    <script>
+        let logoDataUrl = '';
+        
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logo upload handler
+            const logoUpload = document.getElementById('logoUpload');
+            if (logoUpload) {
+                logoUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            logoDataUrl = e.target.result;
+                            document.getElementById('logoPreview').innerHTML = '<img src="' + logoDataUrl + '" alt="Logo preview">';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Form submit handler
+            const form = document.getElementById('generatorForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    generateEmailTemplate();
+                });
+            }
+        });
+        
+        function generateEmailTemplate() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const googleReviewUrl = document.getElementById('googleReviewUrl').value;
+            const internalFeedbackUrl = document.getElementById('internalFeedbackUrl').value;
+            
+            // Create the email HTML without template literals
+            const currentYear = new Date().getFullYear();
+            let emailHtml = '<!DOCTYPE html>\n';
+            emailHtml += '<html>\n<head>\n';
+            emailHtml += '    <meta charset="UTF-8">\n';
+            emailHtml += '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
+            emailHtml += '    <title>Thank you for dining with us - ' + restaurantName + '</title>\n';
+            emailHtml += '    <style>\n';
+            emailHtml += '        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }\n';
+            emailHtml += '        .email-container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #ffffff; }\n';
+            emailHtml += '        .logo-section { text-align: center; margin-bottom: 30px; }\n';
+            emailHtml += '        .logo-section img { max-height: 60px; max-width: 200px; }\n';
+            emailHtml += '        .content-section { text-align: center; padding: 20px; }\n';
+            emailHtml += '        h1 { font-size: 24px; font-weight: 600; color: #000000; margin-bottom: 15px; line-height: 1.3; }\n';
+            emailHtml += '        .stars-container { margin: 30px 0; display: table; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }\n';
+            emailHtml += '        .star-wrapper { display: table-cell; text-align: center; vertical-align: top; }\n';
+            emailHtml += '        .star-link { text-decoration: none; font-size: 42px; color: #cccccc; transition: color 0.2s; display: block; }\n';
+            emailHtml += '        .star-link:hover { color: #000000; }\n';
+            emailHtml += '        .star-number { display: block; font-size: 14px; color: #666666; margin-top: 8px; }\n';
+            emailHtml += '        .thank-you { font-size: 16px; color: #666666; margin-top: 30px; line-height: 1.5; }\n';
+            emailHtml += '        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center; }\n';
+            emailHtml += '        .footer p { font-size: 14px; color: #999999; }\n';
+            emailHtml += '    </style>\n';
+            emailHtml += '</head>\n<body>\n';
+            emailHtml += '    <div class="email-container">\n';
+            
+            if (logoDataUrl) {
+                emailHtml += '        <div class="logo-section"><img src="' + logoDataUrl + '" alt="' + restaurantName + '"></div>\n';
+            }
+            
+            emailHtml += '        <div class="content-section">\n';
+            emailHtml += '            <h1>Thank you so much for dining with us yesterday.<br>How was your experience?</h1>\n\n';
+            emailHtml += '            <div class="stars-container">\n';
+            emailHtml += '                <div class="star-wrapper">\n';
+            emailHtml += '                    <a href="' + internalFeedbackUrl + '" class="star-link">★</a>\n';
+            emailHtml += '                    <span class="star-number">1</span>\n';
+            emailHtml += '                </div>\n';
+            emailHtml += '                <div class="star-wrapper">\n';
+            emailHtml += '                    <a href="' + internalFeedbackUrl + '" class="star-link">★</a>\n';
+            emailHtml += '                    <span class="star-number">2</span>\n';
+            emailHtml += '                </div>\n';
+            emailHtml += '                <div class="star-wrapper">\n';
+            emailHtml += '                    <a href="' + internalFeedbackUrl + '" class="star-link">★</a>\n';
+            emailHtml += '                    <span class="star-number">3</span>\n';
+            emailHtml += '                </div>\n';
+            emailHtml += '                <div class="star-wrapper">\n';
+            emailHtml += '                    <a href="' + googleReviewUrl + '" class="star-link">★</a>\n';
+            emailHtml += '                    <span class="star-number">4</span>\n';
+            emailHtml += '                </div>\n';
+            emailHtml += '                <div class="star-wrapper">\n';
+            emailHtml += '                    <a href="' + googleReviewUrl + '" class="star-link">★</a>\n';
+            emailHtml += '                    <span class="star-number">5</span>\n';
+            emailHtml += '                </div>\n';
+            emailHtml += '            </div>\n\n';
+            emailHtml += '            <p class="thank-you">We really appreciate you leaving us feedback and look forward to seeing you again soon.</p>\n';
+            emailHtml += '        </div>\n\n';
+            emailHtml += '        <div class="footer">\n';
+            emailHtml += '            <p>© ' + currentYear + ' ' + restaurantName + '. All rights reserved.</p>\n';
+            emailHtml += '        </div>\n';
+            emailHtml += '    </div>\n';
+            emailHtml += '</body>\n</html>';
+            
+            // Show preview
+            document.getElementById('generatorSection').style.display = 'none';
+            document.getElementById('previewSection').style.display = 'block';
+            
+            // Display preview
+            let previewHtml = '';
+            if (logoDataUrl) {
+                previewHtml += '<div class="email-logo"><img src="' + logoDataUrl + '" alt="' + restaurantName + '"></div>';
+            }
+            previewHtml += '<div class="email-content">';
+            previewHtml += '    <h3>Thank you so much for dining with us yesterday.<br>How was your experience?</h3>';
+            previewHtml += '    <div class="rating-container">';
+            previewHtml += '        <div style="display: inline-flex; gap: 15px; margin: 20px 0;">';
+            previewHtml += '            <div class="star-wrapper">';
+            previewHtml += '                <span class="star" title="Routes to internal feedback">★</span>';
+            previewHtml += '                <span class="star-number">1</span>';
+            previewHtml += '            </div>';
+            previewHtml += '            <div class="star-wrapper">';
+            previewHtml += '                <span class="star" title="Routes to internal feedback">★</span>';
+            previewHtml += '                <span class="star-number">2</span>';
+            previewHtml += '            </div>';
+            previewHtml += '            <div class="star-wrapper">';
+            previewHtml += '                <span class="star" title="Routes to internal feedback">★</span>';
+            previewHtml += '                <span class="star-number">3</span>';
+            previewHtml += '            </div>';
+            previewHtml += '            <div class="star-wrapper">';
+            previewHtml += '                <span class="star" title="Routes to Google Reviews">★</span>';
+            previewHtml += '                <span class="star-number">4</span>';
+            previewHtml += '            </div>';
+            previewHtml += '            <div class="star-wrapper">';
+            previewHtml += '                <span class="star" title="Routes to Google Reviews">★</span>';
+            previewHtml += '                <span class="star-number">5</span>';
+            previewHtml += '            </div>';
+            previewHtml += '        </div>';
+            previewHtml += '    </div>';
+            previewHtml += '    <p style="font-size: 16px; color: #666; margin-top: 20px;">We really appreciate you leaving us feedback and look forward to seeing you again soon.</p>';
+            previewHtml += '</div>';
+            
+            document.getElementById('emailPreview').innerHTML = previewHtml;
+            document.getElementById('codeContainer').textContent = emailHtml;
+        }
+        
+        function copyCode() {
+            const code = document.getElementById('codeContainer').textContent;
+            navigator.clipboard.writeText(code).then(function() {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy Code';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        function resetForm() {
+            document.getElementById('generatorForm').reset();
+            document.getElementById('logoPreview').innerHTML = '<span style="color: #999;">No logo uploaded</span>';
+            logoDataUrl = '';
+            document.getElementById('generatorSection').style.display = 'block';
+            document.getElementById('previewSection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

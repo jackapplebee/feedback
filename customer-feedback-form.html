@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your feedback is valuable to us</title>
+  <style>
+    :root {
+      --brand: #0f4c5c;
+      --ink: #0d0d0d;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --bg: #ffffff;
+      --star-off: #cfd4da;
+      --star-on: #0f4c5c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f7f7f7; color: var(--ink);
+    }
+    .wrap {
+      max-width: 760px; margin: 40px auto; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .header {
+      background: var(--brand); color: #fff; padding: 20px 24px; text-align: center;
+      font-weight: 600; letter-spacing: .2px;
+    }
+    .content { padding: 24px; }
+    .row { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 14px 0; border-bottom: 1px solid #eef2f7; }
+    .row:last-child { border-bottom: 0; }
+    .label { font-weight: 600; }
+    .stars { display: inline-flex; gap: 6px; }
+    .star {
+      font-size: 22px; cursor: pointer; color: var(--star-off); transition: color .15s ease;
+      user-select: none;
+    }
+    .star.active { color: var(--star-on); }
+    .subhead { margin: 18px 0 8px; color: var(--muted); font-size: 14px; }
+    .radio-group { display: flex; gap: 16px; }
+    .textarea { width: 100%; min-height: 110px; padding: 12px; border: 1px solid var(--border); font: inherit; }
+    .checkbox { display: flex; align-items: center; gap: 10px; margin: 8px 0; color: var(--muted); }
+    .actions { text-align: center; margin-top: 18px; }
+    .btn {
+      background: var(--brand); color: #fff; border: none; padding: 12px 22px; font-weight: 600; cursor: pointer;
+      border-radius: 6px;
+    }
+    .btn:hover { filter: brightness(0.95); }
+    .hint { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 18px; }
+    @media (max-width: 600px) {
+      .row { grid-template-columns: 1fr; gap: 8px; }
+      .stars { justify-content: flex-start; }
+    }
+    .hidden { display: none !important; }
+    .success {
+      text-align: center; padding: 48px 24px;
+    }
+    .success h2 { margin-bottom: 10px; }
+    .success p { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="formWrap">
+    <div class="header">Your feedback is valuable to us</div>
+    <form class="content" id="feedbackForm">
+      <div class="subhead">We'd love to know more about your experience</div>
+
+      <div class="row">
+        <div class="label">Overall</div>
+        <div class="stars" data-name="overall"></div>
+      </div>
+      <div class="row">
+        <div class="label">Food</div>
+        <div class="stars" data-name="food"></div>
+      </div>
+      <div class="row">
+        <div class="label">Drinks</div>
+        <div class="stars" data-name="drinks"></div>
+      </div>
+      <div class="row">
+        <div class="label">Service</div>
+        <div class="stars" data-name="service"></div>
+      </div>
+      <div class="row">
+        <div class="label">Ambience</div>
+        <div class="stars" data-name="ambience"></div>
+      </div>
+
+      <div style="padding-top:18px; border-top:1px solid #eef2f7; margin-top:6px;">
+        <div class="subhead">Would you recommend us to a friend?</div>
+        <div class="radio-group">
+          <label><input type="radio" name="recommend" value="Yes" required> Yes</label>
+          <label><input type="radio" name="recommend" value="No"> No</label>
+        </div>
+
+        <div class="subhead">Any additional feedback?</div>
+        <textarea class="textarea" name="comments" placeholder="Tell us more..."></textarea>
+
+        <label class="checkbox"><input type="checkbox" name="opt_all_locations"> Receive news and offers from all our locations</label>
+        <label class="checkbox"><input type="checkbox" name="opt_brand"> Receive news and offers for APPLEBEE’s</label>
+
+        <div class="actions">
+          <button type="submit" class="btn">Submit</button>
+          <div class="hint">Submitting saves your responses securely.</div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="wrap hidden" id="successWrap">
+    <div class="success">
+      <h2>Thanks for your feedback!</h2>
+      <p>We read every response and use it to improve your next visit.</p>
+    </div>
+    <div class="footer">© <span id="year"></span> Applebee’s Fish</div>
+  </div>
+
+  <script>
+    // Build 5-star widgets for each rating row
+    function buildStars(container) {
+      for (let i = 1; i <= 5; i++) {
+        const span = document.createElement('span');
+        span.className = 'star';
+        span.textContent = '★';
+        span.dataset.value = i;
+        container.appendChild(span);
+      }
+    }
+    document.querySelectorAll('.stars').forEach(buildStars);
+
+    // Handle star interactions
+    document.querySelectorAll('.stars').forEach(group => {
+      group.addEventListener('mouseover', e => {
+        if (!e.target.classList.contains('star')) return;
+        const val = +e.target.dataset.value;
+        group.querySelectorAll('.star').forEach((s, idx) => {
+          s.classList.toggle('active', idx < val);
+        });
+      });
+      group.addEventListener('mouseout', () => {
+        const chosen = +group.dataset.chosen || 0;
+        group.querySelectorAll('.star').forEach((s, idx) => {
+          s.classList.toggle('active', idx < chosen);
+        });
+      });
+      group.addEventListener('click', e => {
+        if (!e.target.classList.contains('star')) return;
+        const val = +e.target.dataset.value;
+        group.dataset.chosen = val;
+        group.querySelectorAll('.star').forEach((s, idx) => {
+          s.classList.toggle('active', idx < val);
+        });
+      });
+    });
+
+    // Submission: demo client-side "save" + thank you screen
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = {};
+      document.querySelectorAll('.stars').forEach(group => {
+        data[group.dataset.name] = +group.dataset.chosen || 0;
+      });
+      data.recommend = (document.querySelector('input[name="recommend"]:checked') || {}).value || '';
+      data.comments = (document.querySelector('textarea[name="comments"]') || {}).value || '';
+      data.opt_all_locations = !!document.querySelector('input[name="opt_all_locations"]:checked');
+      data.opt_brand = !!document.querySelector('input[name="opt_brand"]:checked');
+
+      // Placeholder: you can wire this to your backend or a webhook
+      console.log('Feedback captured:', data);
+
+      // Show success screen
+      document.getElementById('formWrap').classList.add('hidden');
+      document.getElementById('successWrap').classList.remove('hidden');
+      document.getElementById('year').textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
